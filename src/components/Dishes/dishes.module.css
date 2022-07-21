@@ -1,0 +1,11 @@
+
+.reviewItemContainer{
+    margin:0.5rem;
+    padding:2rem;
+    background-color:#e9967a;
+    border:1px solid #ab4e52;
+}
+.reviewItem{
+    font-size:1.5rem;
+
+}
