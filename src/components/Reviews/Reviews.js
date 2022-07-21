@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Review from "./Review";
 import Loader from '../Loader/Loader';
 import styles from './reviews.module.css';
+import { useNavigate } from "react-router-dom";
 
 const Reviews = () => {
     const [reviews, setReviews] = useState([]);
@@ -10,33 +11,50 @@ const Reviews = () => {
     const [showHide, setShowHide] = useState(false);
     const [reRender, setReRender] = useState(false);
     const [dishes, setDishes] = useState([]);
+    const [token, _] = useState(localStorage.getItem("token"));
+    const nav = useNavigate();
+     let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
+    
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/reviews")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result);
-                    setReviews(result);
+        if(!token) return nav("/login");
+        fetch("http://127.0.0.1:8000/api/v1/reviews", { headers: h})
+        .then(res => {
+            if(!res.ok){
+                console.log(res);
+                setError(res);
+                setIsLoaded(true);
+            }else {
+                return res.json()
+            }
+         }).then(
+            (result) =>{
+                    setReviews(result); setIsLoaded(true); setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); }
 
             )
     }, [reRender])
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/dishes")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result);
+        fetch("http://127.0.0.1:8000/api/v1/dishes", { headers: h})
+        .then(res => {
+            if(!res.ok){
+                console.log(res);
+                setError(res);
+                setIsLoaded(true);
+            }else {
+                return res.json()
+            }
+         }).then(
+            (result) =>{
                     setDishes(result); setIsLoaded(true); setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); })
     }, [reRender])
 
     function deleteReview(id, e) {
-        fetch("http://127.0.0.1:8000/api/v1/reviews/" + id, { method: 'DELETE' })
+        fetch("http://127.0.0.1:8000/api/v1/reviews/" + id, { method: 'DELETE', headers: h })
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 if (response.status === 200) {
                     const remaining = reviews.filter(d => id !== d.id)
                     setReviews(remaining)
@@ -52,17 +70,15 @@ const Reviews = () => {
         else if (showHide === true) {
             setShowHide(false);
             // console.log('>>>>Hide')
-        }
+        }if (!isLoaded) {
+        return <div>Loading...</div>;}
     }
     const handleSubmit = event => {
 
         event.preventDefault();
         fetch("http://127.0.0.1:8000/api/v1/reviews/", {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
+            headers: h,
             body: JSON.stringify(
                 {
                     "dish_id": event.target.dish_id.value,
@@ -83,16 +99,16 @@ const Reviews = () => {
                 console.log(error)
             })
     }
-
-    if (error !== null) {
-        return (
-            <div>Error : {error}</div>
-        )
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }else if (error) {
+        return <div>Error: {error.message}</div>;
     }
     else {
         return (
             <>
             <div className={styles.reviewContainer}> 
+            <div className={styles.reviewContainer} style={showHide === false ? { display: 'flex' } : { display: 'none' }}>
 
                 {reviews?.length > 0 ? (reviews.map((review =>
                     <Review key={review.id}
@@ -109,6 +125,8 @@ const Reviews = () => {
                 )
                 }
                 </div>
+            </div>
+
                 <div className={styles.reviewsBtnContainer}>
 
                 <button className={styles.reviewsAddBtn} onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Review' : 'Hide'}  </button>

@@ -4,10 +4,12 @@ const Avg = ({dish_id, reRender}) => {
 
     const [avg, setAvg] = useState ('');
     const [avgCount, setAvgCount] = useState ('');
+    const [token, _] = useState(localStorage.getItem("token"));
+    let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
     
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/reviews/avg/" + dish_id, { method: 'get' })
+        fetch("http://127.0.0.1:8000/api/v1/reviews/avg/" + dish_id, { method: 'get', headers: h })
         .then(res => res.json())
             .then(
                 (result) => {
@@ -18,7 +20,7 @@ const Avg = ({dish_id, reRender}) => {
     
     }, [dish_id])
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/reviews/count/" + dish_id, { method: 'get' })
+        fetch("http://127.0.0.1:8000/api/v1/reviews/count/" + dish_id, { method: 'get', headers: h })
         .then(res => res.json())
             .then(
                 (result) => {

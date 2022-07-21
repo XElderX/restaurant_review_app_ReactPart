@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Avg from "./Avg";
 import styles from './dishes.module.css';
 
@@ -16,23 +17,40 @@ const Dishes = () => {
     const [hideDishes, setHideDishes] = useState(false);
     const [reviews, setReviews] = useState([]);
     const [reviewId, setReviewId] = useState('');
+    const [token, _] = useState(localStorage.getItem("token"));
+    const nav = useNavigate();
+     let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
 
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/dishes")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    // console.log(result);
+        if(!token) return nav("/login");
+        fetch("http://127.0.0.1:8000/api/v1/dishes", { headers: h })
+        .then(res => {
+            if(!res.ok){
+                console.log(res);
+                setError(res);
+                setIsLoaded(true);
+            }else {
+                return res.json()
+            }
+         }).then(
+            (result) =>{
                     setDishes(result); setIsLoaded(true); setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); })
     }, [reRender, showHide])
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/restourants")
-            .then(res => res.json())
-            .then(
-                (result) => {
+        fetch("http://127.0.0.1:8000/api/v1/restourants", { method: 'GET', headers: h})
+            .then(res => {
+                if(!res.ok){
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                }else {
+                    return res.json()
+                }
+             }).then(
+                (result) =>{
                     // console.log(result);
                     setRestourants(result); setIsLoaded(true); setReRender(false);
                 },
@@ -40,7 +58,7 @@ const Dishes = () => {
     }, [])
 
     function deleteDish(id, e) {
-        fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'DELETE' })
+        fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'DELETE', headers: h})
             .then((response) => {
                 // console.log(response);
                 if (response.status === 200) {
@@ -61,10 +79,7 @@ const Dishes = () => {
         event.preventDefault();
         fetch("http://127.0.0.1:8000/api/v1/dishes/", {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
+            headers: h,
             body: JSON.stringify(
                 {
                     "restourant_id": event.target.restourant_id.value,
@@ -93,11 +108,17 @@ const Dishes = () => {
             setErrorMsg(null);
             setShowHide(false);
 
-            fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'GET' })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        // console.log(result);
+            fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'GET',  headers: h })
+            .then(res => {
+                if(!res.ok){
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                }else {
+                    return res.json()
+                }
+             }).then(
+                (result) =>{
                         setCurrentDish(result); setIsLoaded(true); setReRender(false);
 
                     },
@@ -123,10 +144,7 @@ const Dishes = () => {
         event.preventDefault();
         fetch("http://127.0.0.1:8000/api/v1/reviews/", {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
+            headers:h,
             body: JSON.stringify(
                 {
                     "dish_id": event.target.dish_id.value,
@@ -163,8 +181,7 @@ const Dishes = () => {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json', "Authorization" : `Bearer ${token}`},
             body: JSON.stringify(
                 {
                     "restourant_id": event.target.restourant_id.value,
@@ -187,10 +204,17 @@ const Dishes = () => {
     }
 
     function showReviews(id, e) {
-        fetch("http://127.0.0.1:8000/api/v1/reviews/all/" + id, { method: 'GET' })
-        .then(res => res.json())
-                .then(
-                    (result) => {
+        fetch("http://127.0.0.1:8000/api/v1/reviews/all/" + id, { method: 'GET', headers: h })
+        .then(res => {
+            if(!res.ok){
+                console.log(res);
+                setError(res);
+                setIsLoaded(true);
+            }else {
+                return res.json()
+            }
+         }).then(
+            (result) =>{
                         setReviews(result);
                         setReviewId(id);
                         setHideDishes(true);

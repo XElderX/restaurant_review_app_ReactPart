@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Restourants = () => {
+    
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [restourants, setRestourants] = useState([]);
@@ -9,14 +11,30 @@ const Restourants = () => {
     const [reRender, setReRender] = useState(false);
     const [currentRestourant, setCurrentRestourant] = useState([]);
     const [errorMsg, setErrorMsg] = useState('');
+    const [token, _] = useState(localStorage.getItem("token"));
+    const nav = useNavigate();
+    let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
+
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/restourants")
-            .then(res => res.json())
-            .then(
+        if(!token) return nav("/login");
+
+        fetch("http://127.0.0.1:8000/api/v1/restourants", { headers: h })
+            .then(res => {
+                if(!res.ok){
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                }else {
+                    return res.json()
+                }
+             }).then(
                 (result) => {
+                   
                     // console.log(result); 
-                    setRestourants(result); setIsLoaded(true); setReRender(false);
+                    setRestourants(result); 
+                    setIsLoaded(true); 
+                    setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); })
     }, [reRender])
@@ -24,7 +42,8 @@ const Restourants = () => {
 
 
     function deleteRestourant(id, e) {
-        fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'DELETE' })
+       
+        fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'DELETE', headers: h })
             .then((response) => {
                 console.log(response);
                 if (response.status === 200) {
@@ -50,10 +69,7 @@ const Restourants = () => {
         
         fetch("http://127.0.0.1:8000/api/v1/restourants/", {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
+            headers: h,
             body: JSON.stringify(
                 {
                     "r_name": event.target.r_name.value,
@@ -88,7 +104,7 @@ const Restourants = () => {
             setErrorMsg(null);
             setShowHide(false);
 
-            fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'GET' })
+            fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'GET', headers: h})
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -117,7 +133,7 @@ const Restourants = () => {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json ', "Authorization" : `Bearer ${token}`
             },
             body: JSON.stringify(
                 {
