@@ -54,19 +54,17 @@ const Restourants = () => {
             });
     }
     const handleSubmit = event => {
-
         event.preventDefault();
-        if (event.target.r_name.value.match("^[a-zA-Z0-9]{2,15}$")==null){
-            return setErrorMsg('Restourant name is Invalid (Restourant lenght must be no less than 3 characters and no longer than 15 characters)');
+        if (event.target.r_name.value.match("^[a-zA-Z0-9 ]{2,20}$")==null){
+            return setErrorMsg('Restourant name is Invalid (Restourant lenght must be no less than 3 characters and no longer than 20 characters)');
         }
-        if (event.target.city.value.match("^[a-zA-Z]{2,15}$")==null){
-            return setErrorMsg('City name is Invalid. It only can contain letters and have more than 2 and no more than 15 symbols');
+        if (event.target.city.value.match("^[a-zA-Z ]{2,20}$")==null){
+            return setErrorMsg('City name is Invalid. It only can contain letters and have more than 2 and no more than 20 symbols');
         }
-        if (event.target.address.value.match("^[a-zA-Z0-9]{5,25}$")==null){
+        if (event.target.address.value.match("^[a-zA-Z0-9 ]{5,25}$")==null){
             return setErrorMsg('Address is Invalid. Address must have atleast 5 characters or be no longer than 25 characters');
         }
-       
-        
+
         fetch("http://127.0.0.1:8000/api/v1/restourants/", {
             method: 'POST',
             headers: h,
