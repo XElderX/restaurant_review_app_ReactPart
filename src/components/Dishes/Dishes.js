@@ -323,7 +323,7 @@ const Dishes = () => {
                             <tr key={dish.id}>
                                 <td>{dish.restourant.r_name}</td>
                                 <td>{dish.dish_name}</td>
-                                <td>{dish.price}</td>
+                                <td>{dish.price} 	&euro;</td>
                                 <td><img style={{ width: '200px' }} className="photo" src={dish.foto_url} alt={"dish_foto"} /></td>
                                 <td>
                                     <Avg dish_id={dish.id}

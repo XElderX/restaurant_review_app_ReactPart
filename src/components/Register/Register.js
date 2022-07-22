@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    const [email, setEmail] = useState();
+    const [notification, setNotification] = useState('');
+    const nav = useNavigate();
 
 
     const handleSubmit =  event => {
@@ -23,6 +24,9 @@ const Register = () => {
 
         if (response.status === 200) {
             console.log('ok');
+            return nav("/login");
+            
+            
         }
     })
         .catch(error => {
@@ -32,6 +36,7 @@ const Register = () => {
        
     
     return ( <>
+    <div>{notification}</div>
     
     <form onSubmit={handleSubmit}>
          <div className="form-group">

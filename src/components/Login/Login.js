@@ -13,7 +13,7 @@ async function loginUser(credentials) {
     // );
 }
 
-export default function Login() {
+export default function Login({setLogedIn}) {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
@@ -29,8 +29,17 @@ export default function Login() {
         console.log(loginInfo);
         setToken(loginInfo["authorisation"]["token"]);
         localStorage.setItem('token', loginInfo["authorisation"]["token"]);
+        localStorage.setItem('username', loginInfo["user"]["name"]);
+        localStorage.setItem('admin', loginInfo["user"]["admin"]);
+        setLogedIn(true);
     }
+
+
     return(
+
+        <div className="container"> 
+       
+        <h5>Please login</h5>
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="exampleInputEmail1">Email address</label>
@@ -44,5 +53,8 @@ export default function Login() {
             <br/>
             <button type="submit" className="btn btn-primary">Submit</button>
         </form>
+        
+        
+        </div>
     )
 }
