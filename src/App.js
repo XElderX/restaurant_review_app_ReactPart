@@ -16,7 +16,7 @@ function App() {
     const [logedIn, setLogedIn] = useState(false);
     const [token, _] = useState(localStorage.getItem("token"));
     const [user, setUser] = useState(localStorage.getItem("username"));
-    const [admin, setAdmin] = useState(localStorage.getItem("admin"));
+    const [admin, setAdmin] = useState(JSON.parse(localStorage.getItem("admin")));
     useEffect(() => {
         if(token) {
             setLogedIn(true);
@@ -49,7 +49,14 @@ function App() {
         <Route exact path='/home' element={<Home
         logedIn={logedIn} 
         />} />
-        <Route exact path='/restourants' element={<Restourants />} />
+        <Route exact path='/restourants' element={<Restourants
+         logedIn={logedIn}
+         setLogedIn={setLogedIn}
+         token={token}
+         user={user}
+         admin={admin}
+        
+        />} />
         <Route exact path='/dishes' element={<Dishes />} />
         <Route exact path='/reviews' element={<Reviews />} />
       </Routes>

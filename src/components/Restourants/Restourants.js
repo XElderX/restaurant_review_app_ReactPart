@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Restourants = () => {
+const Restourants = ({logedIn, setLogedIn, user, admin}) => {
     
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -31,7 +31,7 @@ const Restourants = () => {
              }).then(
                 (result) => {
                    
-                    // console.log(result); 
+                    console.log(typeof(JSON.parse(localStorage.getItem("admin")))); 
                     setRestourants(result); 
                     setIsLoaded(true); 
                     setReRender(false);
@@ -180,8 +180,8 @@ const Restourants = () => {
                                 <td>{restourant.address}</td>
                                 <td>{restourant.working_hours}</td>
                                 <td>
-                                    <button style={editMode === false && showHide === false ? { display: 'block' } : { display: 'none' }} onClick={(e) => deleteRestourant(restourant.id, e)} className="btn btn-dark">Delete</button>
-                                    <button style={editMode === false && showHide === false ? { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(restourant.id, e)} className="btn btn-dark">Edit</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => deleteRestourant(restourant.id, e)} className="btn btn-dark">Delete</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(restourant.id, e)} className="btn btn-dark">Edit</button>
 
                                 </td>
                             </tr>)
@@ -253,7 +253,7 @@ const Restourants = () => {
                     </div>
                 </div>
 
-                <button style={editMode === false ? { display: 'block' } : { display: 'none' }} className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new restourant' : 'Hide'}  </button>
+                <button style={editMode === false && JSON.parse(localStorage.getItem("admin"))===1 ? { display: 'block' } : { display: 'none' }} className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new restourant' : 'Hide'}  </button>
 
                 <div style={showHide === true  ? { display: 'block' } : { display: 'none' }} className="row justify-content-center">
                     <div className="col-md-8">

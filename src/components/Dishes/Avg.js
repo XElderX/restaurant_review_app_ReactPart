@@ -13,22 +13,22 @@ const Avg = ({dish_id, reRender}) => {
         .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result);
+                    // console.log(result);
                     result === 0 ? setAvg('No reviews yet') : setAvg(result);
                     
                 })
     
-    }, [dish_id])
+    })
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/v1/reviews/count/" + dish_id, { method: 'get', headers: h })
         .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result);
+                    // console.log(result);
                     setAvgCount(result);
                 })
     
-    }, [dish_id])
+    })
    
     return ( 
 

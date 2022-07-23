@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Header=({logedIn, setLogedIn, token, user, admin, setAdmin})=>{
     const [isLogedin, setIsLogedin] = useState();
+    const nav = useNavigate();
     
     
 
@@ -17,6 +18,7 @@ const Header=({logedIn, setLogedIn, token, user, admin, setAdmin})=>{
         setLogedIn(false);
         setIsLogedin(false);
         setAdmin(false);
+        return nav("/home");
         
         
         
@@ -44,7 +46,7 @@ const Header=({logedIn, setLogedIn, token, user, admin, setAdmin})=>{
                     <li className="nav-item"><Link className="nav-link" to="/home">Home</Link></li>
                     <li style={(logedIn) ? {display:"inline"} : {display: 'none'}} className="nav-item"><Link className="nav-link" to="/restourants">Restourants</Link></li>
                     <li style={(logedIn) ? {display:"inline"} : {display: 'none'}} className="nav-item"><Link className="nav-link" to="/dishes">Dishes</Link></li>
-                    <li style={(logedIn) ? {display:"inline"} : {display: 'none'}}  className="nav-item"><Link className="nav-link" to="/reviews">Reviews</Link></li>
+                    <li style={JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'inline' } : { display: 'none' }}  className="nav-item"><Link className="nav-link" to="/reviews">Reviews</Link></li>
                 </ul>
               
             </div>

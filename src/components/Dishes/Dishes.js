@@ -67,6 +67,16 @@ const Dishes = () => {
                 }
             });
     }
+    function deleteReview(id, e) {
+        fetch("http://127.0.0.1:8000/api/v1/reviews/" + id, { method: 'DELETE', headers: h})
+            .then((response) => {
+                // console.log(response);
+                if (response.status === 200) {
+                    const remaining = reviews.filter(r => id !== r.id)
+                    setReviews(remaining)
+                }
+            });
+    }
     const handleSubmit = event => {
 
         if (event.target.dish_name.value.match("^[a-zA-Z0-9 ]{2,25}$") == null) {
@@ -155,11 +165,13 @@ const Dishes = () => {
             )
         }).then(response => {
 
+            console.log(response)
 
             if (response.status === 201) {
                 setShowHide(false);
                 setReRender(false);
                 setHideDishes(false);
+                return nav("/dishes");
             }
         })
             .catch(error => {
@@ -194,7 +206,8 @@ const Dishes = () => {
             console.log(response)
 
             if (response.status === 200) {
-                setReRender(true);
+                setReRender(false);
+               
             }
         })
             .catch(error => {
@@ -250,8 +263,9 @@ const Dishes = () => {
                             </div>
 
                             <div className="form-group">
-                                <label>Author: </label>
-                                <input type="text"
+                                <label>Review author: <b>{localStorage.getItem("username")}</b> </label>
+                                <input type="hidden"
+                                value={localStorage.getItem("username")}
                                     name="author"
                                     className="form-control"
                                 />
@@ -269,7 +283,7 @@ const Dishes = () => {
                                     <option value="7">7</option>
                                     <option value="8">8</option>
                                     <option value="9">9</option>
-                                    <option value="10">1</option>
+                                    <option value="10">10</option>
                                 </select>
                             </div>
                             <div className="form-group">
@@ -295,6 +309,7 @@ const Dishes = () => {
              <div className={styles.reviewItem}><b>Commented:</b> {review.comment}</div>
              <div className={styles.reviewItem}><b>Rated as:</b> {review.rate} of 10</div>
              <div className={styles.reviewItem}><b>Posted at:</b> {review.created_at.replace('T', " ",).slice(0, 16)}</div>
+             <div style={((localStorage.getItem("username")===(review.author)) || (JSON.parse(localStorage.getItem("admin")))===1) ? {display:'block' } : { display: 'none'}} className={styles.reviewItem}> <button  onClick={(e) => deleteReview(review.id, e)} className="btn btn-dark">Delete</button></div>
              
              <br></br>
              </div>
@@ -323,7 +338,7 @@ const Dishes = () => {
                             <tr key={dish.id}>
                                 <td>{dish.restourant.r_name}</td>
                                 <td>{dish.dish_name}</td>
-                                <td>{dish.price} 	&euro;</td>
+                                <td>{dish.price} &euro;</td>
                                 <td><img style={{ width: '200px' }} className="photo" src={dish.foto_url} alt={"dish_foto"} /></td>
                                 <td>
                                     <Avg dish_id={dish.id}
@@ -333,8 +348,8 @@ const Dishes = () => {
                                     
                                 </td>
                                 <td>
-                                    <button onClick={(e) => deleteDish(dish.id, e)} className="btn btn-dark">Delete</button>
-                                    <button style={editMode === false && showHide === false ? { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(dish.id, e)} className="btn btn-dark">Edit</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'block' } : { display: 'none' }} onClick={(e) => deleteDish(dish.id, e)} className="btn btn-dark">Delete</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(dish.id, e)} className="btn btn-dark">Edit</button>
                                 </td>
                             </tr>)
                         )}
@@ -403,7 +418,7 @@ const Dishes = () => {
                     </div>
                 </div>
 
-                <button className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Dish' : 'Hide'}  </button>
+                <button style={JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'block' } : { display: 'none' }}className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false  ? 'Add new Dish' : 'Hide'}  </button>
                 <div style={showHide === true ? { display: 'block' } : { display: 'none' }}>
                     <div className="row justify-content-center">
                         <div className="col-md-8">
