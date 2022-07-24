@@ -14,10 +14,7 @@ const Review = ({dish, author, comment, rate, posted, CallParentFunction, id}) =
             <div>Posted at: {posted.replace('T', " ",).slice(0, 16)}</div>
             <button onClick={(e)=>{CallParentFunction(id)}} className="btn btn-dark">Delete</button>
             <br></br>
-
-
         </div>
-
         </div>
 
      );

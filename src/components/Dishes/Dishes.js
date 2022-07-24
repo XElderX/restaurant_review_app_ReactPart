@@ -19,38 +19,38 @@ const Dishes = () => {
     const [reviewId, setReviewId] = useState('');
     const [token, _] = useState(localStorage.getItem("token"));
     const nav = useNavigate();
-     let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
+    let h = { 'Accept': 'application/json', "Authorization": `Bearer ${token}` };
 
 
     useEffect(() => {
-        if(!token) return nav("/login");
+        if (!token) return nav("/login");
         fetch("http://127.0.0.1:8000/api/v1/dishes", { headers: h })
-        .then(res => {
-            if(!res.ok){
-                console.log(res);
-                setError(res);
-                setIsLoaded(true);
-            }else {
-                return res.json()
-            }
-         }).then(
-            (result) =>{
+            .then(res => {
+                if (!res.ok) {
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                } else {
+                    return res.json()
+                }
+            }).then(
+                (result) => {
                     setDishes(result); setIsLoaded(true); setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); })
     }, [reRender, showHide])
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/restourants", { method: 'GET', headers: h})
+        fetch("http://127.0.0.1:8000/api/v1/restourants", { method: 'GET', headers: h })
             .then(res => {
-                if(!res.ok){
+                if (!res.ok) {
                     console.log(res);
                     setError(res);
                     setIsLoaded(true);
-                }else {
+                } else {
                     return res.json()
                 }
-             }).then(
-                (result) =>{
+            }).then(
+                (result) => {
                     // console.log(result);
                     setRestourants(result); setIsLoaded(true); setReRender(false);
                 },
@@ -58,7 +58,7 @@ const Dishes = () => {
     }, [])
 
     function deleteDish(id, e) {
-        fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'DELETE', headers: h})
+        fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'DELETE', headers: h })
             .then((response) => {
                 // console.log(response);
                 if (response.status === 200) {
@@ -68,7 +68,7 @@ const Dishes = () => {
             });
     }
     function deleteReview(id, e) {
-        fetch("http://127.0.0.1:8000/api/v1/reviews/" + id, { method: 'DELETE', headers: h})
+        fetch("http://127.0.0.1:8000/api/v1/reviews/" + id, { method: 'DELETE', headers: h })
             .then((response) => {
                 // console.log(response);
                 if (response.status === 200) {
@@ -118,17 +118,17 @@ const Dishes = () => {
             setErrorMsg(null);
             setShowHide(false);
 
-            fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'GET',  headers: h })
-            .then(res => {
-                if(!res.ok){
-                    console.log(res);
-                    setError(res);
-                    setIsLoaded(true);
-                }else {
-                    return res.json()
-                }
-             }).then(
-                (result) =>{
+            fetch("http://127.0.0.1:8000/api/v1/dishes/" + id, { method: 'GET', headers: h })
+                .then(res => {
+                    if (!res.ok) {
+                        console.log(res);
+                        setError(res);
+                        setIsLoaded(true);
+                    } else {
+                        return res.json()
+                    }
+                }).then(
+                    (result) => {
                         setCurrentDish(result); setIsLoaded(true); setReRender(false);
 
                     },
@@ -154,7 +154,7 @@ const Dishes = () => {
         event.preventDefault();
         fetch("http://127.0.0.1:8000/api/v1/reviews/", {
             method: 'POST',
-            headers:h,
+            headers: h,
             body: JSON.stringify(
                 {
                     "dish_id": event.target.dish_id.value,
@@ -182,7 +182,7 @@ const Dishes = () => {
 
     const handleUpdateSubmit = event => {
         event.preventDefault();
-    
+
         if (event.target.dish_name.value.match("^[a-zA-Z0-9 ]{2,25}$") == null) {
             return setErrorMsg('Dish title is Invalid (Dish title\' lenght must be no less than 3 characters and no longer than 25 characters)');
         }
@@ -193,7 +193,8 @@ const Dishes = () => {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json', "Authorization" : `Bearer ${token}`},
+                'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
+            },
             body: JSON.stringify(
                 {
                     "restourant_id": event.target.restourant_id.value,
@@ -207,7 +208,7 @@ const Dishes = () => {
 
             if (response.status === 200) {
                 setReRender(false);
-               
+
             }
         })
             .catch(error => {
@@ -218,22 +219,23 @@ const Dishes = () => {
 
     function showReviews(id, e) {
         fetch("http://127.0.0.1:8000/api/v1/reviews/all/" + id, { method: 'GET', headers: h })
-        .then(res => {
-            if(!res.ok){
-                console.log(res);
-                setError(res);
-                setIsLoaded(true);
-            }else {
-                return res.json()
-            }
-         }).then(
-            (result) =>{
-                        setReviews(result);
-                        setReviewId(id);
-                        setHideDishes(true);
+            .then(res => {
+                if (!res.ok) {
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                } else {
+                    return res.json()
+                }
+            }).then(
+                (result) => {
+                    setReviews(result);
+                    setReviewId(id);
+                    setHideDishes(true);
 
-                    }
-                    )}
+                }
+            )
+    }
 
     if (!isLoaded) {
         return <div>Loading...</div>;
@@ -241,87 +243,87 @@ const Dishes = () => {
         return <div>Error: {error.message}</div>;
     } else {
         return (<>
-        <div style={hideDishes === true ? { display: 'block' } : { display: 'none' }} className='container'>
-        <button className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Review' : 'Hide'}  </button>
+            <div style={hideDishes === true ? { display: 'block' } : { display: 'none' }} className='container'>
+                <button className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Review' : 'Hide'}  </button>
 
-<div>
-    <div style={showHide === true ? { display: 'block' } : { display: 'none' }}>
-        <div className="row justify-content-center">
-            <div className="col-md-8">
-                <div className="card">
-                    <div className="card-header">A New Review:</div>
-                    <div className="card-body">
-                        <form onSubmit={reviewHandleSubmit}>
-                            <div className="form-group">
-                                
-                                <input
-                                type="hidden"
-                                name="dish_id"
-                                value={reviewId}
+                <div>
+                    <div style={showHide === true ? { display: 'block' } : { display: 'none' }}>
+                        <div className="row justify-content-center">
+                            <div className="col-md-8">
+                                <div className="card">
+                                    <div className="card-header">A New Review:</div>
+                                    <div className="card-body">
+                                        <form onSubmit={reviewHandleSubmit}>
+                                            <div className="form-group">
 
-                                />
-                            </div>
+                                                <input
+                                                    type="hidden"
+                                                    name="dish_id"
+                                                    value={reviewId}
 
-                            <div className="form-group">
-                                <label>Review author: <b>{localStorage.getItem("username")}</b> </label>
-                                <input type="hidden"
-                                value={localStorage.getItem("username")}
-                                    name="author"
-                                    className="form-control"
-                                />
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label>Review author: <b>{localStorage.getItem("username")}</b> </label>
+                                                <input type="hidden"
+                                                    value={localStorage.getItem("username")}
+                                                    name="author"
+                                                    className="form-control"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Rating: </label>
+                                                <select name="rate" id="rate" className="form-control" >
+                                                    <option value="">--How do you liked it?--</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Comment : </label>
+                                                <input type="text"
+                                                    name="comment"
+                                                    className="form-control"
+                                                />
+                                            </div>
+                                            <button type="submit"
+                                                className="btn btn-primary">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="form-group">
-                                <label>Rating: </label>
-                                <select name="rate" id="rate" className="form-control" >
-                                    <option value="">--How do you liked it?--</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Comment : </label>
-                                <input type="text"
-                                    name="comment"
-                                    className="form-control"
-                                />
-                            </div>
-                            <button type="submit"
-                                className="btn btn-primary">Submit</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
+                {reviews?.length > 0 ? (reviews.map(review => (
+                    <div className={styles.reviewItemContainer} key={review.id}>
+                        <div className={styles.reviewItem}><b>Review of :</b> <u>{review.dish.dish_name}</u></div>
+                        <div className={styles.reviewItem}><b>Reviewed by:</b> {review.author}</div>
+                        <div className={styles.reviewItem}><b>Commented:</b> {review.comment}</div>
+                        <div className={styles.reviewItem}><b>Rated as:</b> {review.rate} of 10</div>
+                        <div className={styles.reviewItem}><b>Posted at:</b> {review.created_at.replace('T', " ",).slice(0, 16)}</div>
+                        <div style={((localStorage.getItem("username") === (review.author)) || (JSON.parse(localStorage.getItem("admin"))) === 1) ? { display: 'block' } : { display: 'none' }} className={styles.reviewItem}> <button onClick={(e) => deleteReview(review.id, e)} className="btn btn-dark">Delete</button></div>
+
+                        <br></br>
+                    </div>
+                ))
+                ) : (
+                    <div className={styles.dishes}> This dish haven't had any reviews yet </div>
+                )}
+
+                <button onClick={(e) => setHideDishes(false)} className="btn btn-dark">Go back</button>
+
             </div>
-        </div>
-    </div>
-</div>
-           {reviews?.length > 0 ? (reviews.map(review =>(
-            <div className={styles.reviewItemContainer} key={review.id}>
-             <div className={styles.reviewItem}><b>Review of :</b> <u>{review.dish.dish_name}</u></div>
-             <div className={styles.reviewItem}><b>Reviewed by:</b> {review.author}</div>
-             <div className={styles.reviewItem}><b>Commented:</b> {review.comment}</div>
-             <div className={styles.reviewItem}><b>Rated as:</b> {review.rate} of 10</div>
-             <div className={styles.reviewItem}><b>Posted at:</b> {review.created_at.replace('T', " ",).slice(0, 16)}</div>
-             <div style={((localStorage.getItem("username")===(review.author)) || (JSON.parse(localStorage.getItem("admin")))===1) ? {display:'block' } : { display: 'none'}} className={styles.reviewItem}> <button  onClick={(e) => deleteReview(review.id, e)} className="btn btn-dark">Delete</button></div>
-             
-             <br></br>
-             </div>
-           ))
-        ) : (
-            <div className={styles.dishes}> This dish haven't had any reviews yet </div>
-        )}
 
-<button onClick={(e) => setHideDishes(false)} className="btn btn-dark">Go back</button>
-
-        </div>
-        
             <div style={hideDishes === false ? { display: 'block' } : { display: 'none' }} className="container">
                 <table className="table">
                     <thead>
@@ -345,11 +347,11 @@ const Dishes = () => {
                                     />
 
                                     <button onClick={(e) => showReviews(dish.id, e)} className="btn btn-dark">View dish reviews</button>
-                                    
+
                                 </td>
                                 <td>
-                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'block' } : { display: 'none' }} onClick={(e) => deleteDish(dish.id, e)} className="btn btn-dark">Delete</button>
-                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(dish.id, e)} className="btn btn-dark">Edit</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin")) === 1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => deleteDish(dish.id, e)} className="btn btn-dark">Delete</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin")) === 1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(dish.id, e)} className="btn btn-dark">Edit</button>
                                 </td>
                             </tr>)
                         )}
@@ -418,7 +420,7 @@ const Dishes = () => {
                     </div>
                 </div>
 
-                <button style={JSON.parse(localStorage.getItem("admin"))===1 ?  { display: 'block' } : { display: 'none' }}className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false  ? 'Add new Dish' : 'Hide'}  </button>
+                <button style={JSON.parse(localStorage.getItem("admin")) === 1 ? { display: 'block' } : { display: 'none' }} className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Dish' : 'Hide'}  </button>
                 <div style={showHide === true ? { display: 'block' } : { display: 'none' }}>
                     <div className="row justify-content-center">
                         <div className="col-md-8">
@@ -474,7 +476,7 @@ const Dishes = () => {
                     </div>
                 </div>
             </div>
-            </>
+        </>
         );
     }
 }

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Restourants = ({logedIn, setLogedIn, user, admin}) => {
-    
+const Restourants = ({ logedIn, setLogedIn, user, admin }) => {
+
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [restourants, setRestourants] = useState([]);
@@ -13,27 +13,27 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
     const [errorMsg, setErrorMsg] = useState('');
     const [token, _] = useState(localStorage.getItem("token"));
     const nav = useNavigate();
-    let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
+    let h = { 'Accept': 'application/json', "Authorization": `Bearer ${token}` };
 
 
     useEffect(() => {
-        if(!token) return nav("/login");
+        if (!token) return nav("/login");
 
         fetch("http://127.0.0.1:8000/api/v1/restourants", { headers: h })
             .then(res => {
-                if(!res.ok){
+                if (!res.ok) {
                     console.log(res);
                     setError(res);
                     setIsLoaded(true);
-                }else {
+                } else {
                     return res.json()
                 }
-             }).then(
+            }).then(
                 (result) => {
-                   
-                    console.log(typeof(JSON.parse(localStorage.getItem("admin")))); 
-                    setRestourants(result); 
-                    setIsLoaded(true); 
+
+                    console.log(typeof (JSON.parse(localStorage.getItem("admin"))));
+                    setRestourants(result);
+                    setIsLoaded(true);
                     setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); })
@@ -42,7 +42,7 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
 
 
     function deleteRestourant(id, e) {
-       
+
         fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'DELETE', headers: h })
             .then((response) => {
                 console.log(response);
@@ -55,13 +55,13 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
     }
     const handleSubmit = event => {
         event.preventDefault();
-        if (event.target.r_name.value.match("^[a-zA-Z0-9 ]{2,20}$")==null){
+        if (event.target.r_name.value.match("^[a-zA-Z0-9 ]{2,20}$") == null) {
             return setErrorMsg('Restourant name is Invalid (Restourant lenght must be no less than 3 characters and no longer than 20 characters)');
         }
-        if (event.target.city.value.match("^[a-zA-Z ]{2,20}$")==null){
+        if (event.target.city.value.match("^[a-zA-Z ]{2,20}$") == null) {
             return setErrorMsg('City name is Invalid. It only can contain letters and have more than 2 and no more than 20 symbols');
         }
-        if (event.target.address.value.match("^[a-zA-Z0-9 ]{5,25}$")==null){
+        if (event.target.address.value.match("^[a-zA-Z0-9 ]{5,25}$") == null) {
             return setErrorMsg('Address is Invalid. Address must have atleast 5 characters or be no longer than 25 characters');
         }
 
@@ -102,11 +102,11 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
             setErrorMsg(null);
             setShowHide(false);
 
-            fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'GET', headers: h})
+            fetch("http://127.0.0.1:8000/api/v1/restourants/" + id, { method: 'GET', headers: h })
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        console.log(result); 
+                        console.log(result);
                         setCurrentRestourant(result); setIsLoaded(true); setReRender(false);
 
                     },
@@ -118,20 +118,20 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
 
     const handleUpdateSubmit = event => {
         event.preventDefault();
-        if (event.target.r_name.value.match("^[a-zA-Z0-9 ]{2,20}$")==null){
+        if (event.target.r_name.value.match("^[a-zA-Z0-9 ]{2,20}$") == null) {
             return setErrorMsg('Restourant name is Invalid (Restourant lenght must be no less than 3 characters and no longer than 20 characters)');
         }
-        if (event.target.city.value.match("^[a-zA-Z ]{2,20}$")==null){
+        if (event.target.city.value.match("^[a-zA-Z ]{2,20}$") == null) {
             return setErrorMsg('City name is Invalid. It only can contain letters and have more than 2 and no more than 20 symbols');
         }
-        if (event.target.address.value.match("^[a-zA-Z0-9 ]{5,25}$")==null){
+        if (event.target.address.value.match("^[a-zA-Z0-9 ]{5,25}$") == null) {
             return setErrorMsg('Address is Invalid. Address must have atleast 5 characters or be no longer than 25 characters');
         }
         fetch("http://127.0.0.1:8000/api/v1/restourants/" + currentRestourant.id, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json ', "Authorization" : `Bearer ${token}`
+                'Content-Type': 'application/json ', "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(
                 {
@@ -180,8 +180,8 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
                                 <td>{restourant.address}</td>
                                 <td>{restourant.working_hours}</td>
                                 <td>
-                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => deleteRestourant(restourant.id, e)} className="btn btn-dark">Delete</button>
-                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin"))===1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(restourant.id, e)} className="btn btn-dark">Edit</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin")) === 1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => deleteRestourant(restourant.id, e)} className="btn btn-dark">Delete</button>
+                                    <button style={editMode === false && showHide === false && JSON.parse(localStorage.getItem("admin")) === 1 ? { display: 'block' } : { display: 'none' }} onClick={(e) => functionEditBtn(restourant.id, e)} className="btn btn-dark">Edit</button>
 
                                 </td>
                             </tr>)
@@ -198,7 +198,7 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
                             <div className="card">
                                 <div className="card-header">Update restourant info:</div>
                                 <div className="card-body"></div>
-                                
+
 
                                 <form onSubmit={handleUpdateSubmit}>
 
@@ -253,15 +253,15 @@ const Restourants = ({logedIn, setLogedIn, user, admin}) => {
                     </div>
                 </div>
 
-                <button style={editMode === false && JSON.parse(localStorage.getItem("admin"))===1 ? { display: 'block' } : { display: 'none' }} className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new restourant' : 'Hide'}  </button>
+                <button style={editMode === false && JSON.parse(localStorage.getItem("admin")) === 1 ? { display: 'block' } : { display: 'none' }} className="btn btn-primary" onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new restourant' : 'Hide'}  </button>
 
-                <div style={showHide === true  ? { display: 'block' } : { display: 'none' }} className="row justify-content-center">
+                <div style={showHide === true ? { display: 'block' } : { display: 'none' }} className="row justify-content-center">
                     <div className="col-md-8">
                         <div className="card">
                             <div className="card-header">Create a restourant:</div>
                             <div className="card-body">
 
-                        
+
 
                                 <form onSubmit={handleSubmit}>
 
