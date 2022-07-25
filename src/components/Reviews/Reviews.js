@@ -13,21 +13,21 @@ const Reviews = () => {
     const [dishes, setDishes] = useState([]);
     const [token, _] = useState(localStorage.getItem("token"));
     const nav = useNavigate();
-     let h = { 'Accept': 'application/json', "Authorization" : `Bearer ${token}`};
-    
+    let h = { 'Accept': 'application/json', "Authorization": `Bearer ${token}` };
+
     useEffect(() => {
-        if(!token) return nav("/login");
-        fetch("http://127.0.0.1:8000/api/v1/reviews", { headers: h})
-        .then(res => {
-            if(!res.ok){
-                console.log(res);
-                setError(res);
-                setIsLoaded(true);
-            }else {
-                return res.json()
-            }
-         }).then(
-            (result) =>{
+        if (!token) return nav("/login");
+        fetch("http://127.0.0.1:8000/api/v1/reviews", { headers: h })
+            .then(res => {
+                if (!res.ok) {
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                } else {
+                    return res.json()
+                }
+            }).then(
+                (result) => {
                     setReviews(result); setIsLoaded(true); setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); }
@@ -35,17 +35,17 @@ const Reviews = () => {
             )
     }, [reRender])
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/dishes", { headers: h})
-        .then(res => {
-            if(!res.ok){
-                console.log(res);
-                setError(res);
-                setIsLoaded(true);
-            }else {
-                return res.json()
-            }
-         }).then(
-            (result) =>{
+        fetch("http://127.0.0.1:8000/api/v1/dishes", { headers: h })
+            .then(res => {
+                if (!res.ok) {
+                    console.log(res);
+                    setError(res);
+                    setIsLoaded(true);
+                } else {
+                    return res.json()
+                }
+            }).then(
+                (result) => {
                     setDishes(result); setIsLoaded(true); setReRender(false);
                 },
                 (error) => { setError(error); setIsLoaded(true); })
@@ -70,8 +70,9 @@ const Reviews = () => {
         else if (showHide === true) {
             setShowHide(false);
             // console.log('>>>>Hide')
-        }if (!isLoaded) {
-        return <div>Loading...</div>;}
+        } if (!isLoaded) {
+            return <div>Loading...</div>;
+        }
     }
     const handleSubmit = event => {
 
@@ -101,35 +102,35 @@ const Reviews = () => {
     }
     if (!isLoaded) {
         return <div>Loading...</div>;
-    }else if (error) {
+    } else if (error) {
         return <div>Error: {error.message}</div>;
     }
     else {
         return (
             <>
-            <div className={styles.reviewContainer}> 
-            <div className={styles.reviewContainer} style={showHide === false ? { display: 'flex' } : { display: 'none' }}>
+                <div className={styles.reviewContainer}>
+                    <div className={styles.reviewContainer} style={showHide === false ? { display: 'flex' } : { display: 'none' }}>
 
-                {reviews?.length > 0 ? (reviews.map((review =>
-                    <Review key={review.id}
-                        id={review.id}
-                        dish={review.dish.dish_name}
-                        author={review.author}
-                        comment={review.comment}
-                        rate={review.rate}
-                        posted={review.created_at}
-                        CallParentFunction={deleteReview}
-                    />))
-                ) : (
-                    <Loader />
-                )
-                }
+                        {reviews?.length > 0 ? (reviews.map((review =>
+                            <Review key={review.id}
+                                id={review.id}
+                                dish={review.dish.dish_name}
+                                author={review.author}
+                                comment={review.comment}
+                                rate={review.rate}
+                                posted={review.created_at}
+                                CallParentFunction={deleteReview}
+                            />))
+                        ) : (
+                            <Loader />
+                        )
+                        }
+                    </div>
                 </div>
-            </div>
 
                 <div className={styles.reviewsBtnContainer}>
 
-                <button className={styles.reviewsAddBtn} onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Review' : 'Hide'}  </button>
+                    <button className={styles.reviewsAddBtn} onClick={(e) => functionShowHide(e)}> {showHide === false ? 'Add new Review' : 'Hide'}  </button>
 
                 </div>
 

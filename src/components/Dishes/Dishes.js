@@ -6,6 +6,7 @@ import styles from './dishes.module.css';
 
 const Dishes = () => {
     const [error, setError] = useState(null);
+    const [newReview, setNewReview] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [dishes, setDishes] = useState([]);
     const [editMode, setEditMode] = useState(false);
@@ -78,18 +79,14 @@ const Dishes = () => {
             });
     }
     const handleSubmit = event => {
-
-        if (event.target.dish_name.value.match("^[a-zA-Z0-9 ]{2,25}$") == null) {
-            return setErrorMsg('Dish title is Invalid (Dish title\' lenght must be no less than 3 characters and no longer than 25 characters)');
-        }
-        if (event.target.price.value.match("[0-9.]$") == null) {
-            return setErrorMsg('Dish price is Invalid. ');
-        }
-
         event.preventDefault();
+        console.log(event.target.foto_url.value)
         fetch("http://127.0.0.1:8000/api/v1/dishes/", {
             method: 'POST',
-            headers: h,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
+            },
             body: JSON.stringify(
                 {
                     "restourant_id": event.target.restourant_id.value,
@@ -109,6 +106,36 @@ const Dishes = () => {
             .catch(error => {
                 console.log(error)
             })
+    }
+    const handleUpdateSubmit = event => {
+        event.preventDefault();
+
+        fetch("http://127.0.0.1:8000/api/v1/dishes/" + currentDish.id, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(
+                {
+                    "restourant_id": event.target.restourant_id.value,
+                    "dish_name": event.target.dish_name.value,
+                    "price": event.target.price.value,
+                    "foto_url": event.target.foto_url.value
+                }
+            )
+        }).then(response => {
+            console.log(response)
+
+            if (response.status === 200) {
+                setReRender(true);
+
+            }
+        })
+            .catch(error => {
+                console.log(error)
+            })
+
     }
 
 
@@ -169,9 +196,10 @@ const Dishes = () => {
 
             if (response.status === 201) {
                 setShowHide(false);
-                setReRender(false);
+                setReRender(true);
                 setHideDishes(false);
-                return nav("/dishes");
+                setNewReview(!newReview)
+               
             }
         })
             .catch(error => {
@@ -180,42 +208,7 @@ const Dishes = () => {
     }
 
 
-    const handleUpdateSubmit = event => {
-        event.preventDefault();
-
-        if (event.target.dish_name.value.match("^[a-zA-Z0-9 ]{2,25}$") == null) {
-            return setErrorMsg('Dish title is Invalid (Dish title\' lenght must be no less than 3 characters and no longer than 25 characters)');
-        }
-        if (event.target.price.value.match("[0-9.]$") == null) {
-            return setErrorMsg('Dish price is Invalid. ');
-        }
-        fetch("http://127.0.0.1:8000/api/v1/dishes/" + currentDish.id, {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(
-                {
-                    "restourant_id": event.target.restourant_id.value,
-                    "dish_name": event.target.dish_name.value,
-                    "price": event.target.price.value,
-                    "foto_url": event.target.foto_url.value
-                }
-            )
-        }).then(response => {
-            console.log(response)
-
-            if (response.status === 200) {
-                setReRender(false);
-
-            }
-        })
-            .catch(error => {
-                console.log(error)
-            })
-
-    }
+ 
 
     function showReviews(id, e) {
         fetch("http://127.0.0.1:8000/api/v1/reviews/all/" + id, { method: 'GET', headers: h })
@@ -321,7 +314,6 @@ const Dishes = () => {
                 )}
 
                 <button onClick={(e) => setHideDishes(false)} className="btn btn-dark">Go back</button>
-
             </div>
 
             <div style={hideDishes === false ? { display: 'block' } : { display: 'none' }} className="container">
@@ -332,7 +324,7 @@ const Dishes = () => {
                             <th>Dish</th>
                             <th>Price</th>
                             <th>Image</th>
-                            <th>Reviews and Rating</th>
+                            <th>Reviews and Rating </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -341,9 +333,9 @@ const Dishes = () => {
                                 <td>{dish.restourant.r_name}</td>
                                 <td>{dish.dish_name}</td>
                                 <td>{dish.price} &euro;</td>
-                                <td><img style={{ width: '200px' }} className="photo" src={dish.foto_url} alt={"dish_foto"} /></td>
+                                <td><img style={{ width: '200px' }} className="photo" src={dish.foto_url}  alt="dish_foto"></img></td>
                                 <td>
-                                    <Avg dish_id={dish.id}
+                                    <Avg dish_id={dish.id} newReview={newReview}
                                     />
 
                                     <button onClick={(e) => showReviews(dish.id, e)} className="btn btn-dark">View dish reviews</button>

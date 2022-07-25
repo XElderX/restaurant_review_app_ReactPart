@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-const Avg = ({ dish_id, reRender }) => {
-
+const Avg = ({ dish_id, newReview }) => {
+    const [error, setError] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
     const [avg, setAvg] = useState('');
     const [avgCount, setAvgCount] = useState('');
     const [token, _] = useState(localStorage.getItem("token"));
@@ -15,10 +16,11 @@ const Avg = ({ dish_id, reRender }) => {
                 (result) => {
                     // console.log(result);
                     result === 0 ? setAvg('No reviews yet') : setAvg(result);
+                },
+                (error) => { setError(error); setIsLoaded(true); });
+                
 
-                })
-
-    })
+    }, [newReview])
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/v1/reviews/count/" + dish_id, { method: 'get', headers: h })
             .then(res => res.json())
@@ -26,9 +28,12 @@ const Avg = ({ dish_id, reRender }) => {
                 (result) => {
                     // console.log(result);
                     setAvgCount(result);
+                }, 
+                (error) => { setError(error); setIsLoaded(true);
                 })
 
-    })
+    }, [newReview])
+    
 
     return (
 
